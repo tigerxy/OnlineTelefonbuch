@@ -1,5 +1,4 @@
 <?php
-# Documentation https://teamwork.gigaset.com/gigawiki/display/GPPPO/Online+directory 
 function QueryDasOertlicheDe($Rufnummer) {
    $record = false;
    $url = "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$Rufnummer";
