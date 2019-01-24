@@ -29,3 +29,5 @@ Fertig. Wenn alles geklappt hat, erscheint beim nächsten bekannten Anrufer, der
 
 # Weitere Informationen
 Ich habe diese [Dokumentation](https://teamwork.gigaset.com/gigawiki/display/GPPPO/Online+directory) von Gigaset gefunden, die mir bei der Implementierung geholfen hat.
+
+[![](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MCKETSJBUZPJ2&source=url)
