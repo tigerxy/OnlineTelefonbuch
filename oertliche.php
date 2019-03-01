@@ -10,7 +10,7 @@ function QueryDasOertlicheDe($Rufnummer) {
    @$dom->loadHTMLFile($url);
    if ($dom->documentURI == null)
    {
-      IPSLogger_Wrn('Datei: '.__file__.' Zeile: '.__line__, 'Timeout bei Abruf der Webseite '.$url);
+      die ('Timeout bei Abruf der Webseite '.$url);
       return false;
    }
    $finder = new DomXPath($dom);
