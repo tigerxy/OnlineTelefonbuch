@@ -1,4 +1,20 @@
 <?php
+$addAreaCode = false;
+
+#-----------------------------------------#
+# Settings / Einstellungen                #
+#-----------------------------------------#
+
+# Add area code true/false (remove #)
+# Vorwahl ergänzen ja/nein (# entfernen)
+#$addAreaCode = true;
+
+# Insert your area code here
+# Eigene Vorwahl hier eingeben
+$areaCode = "030";
+
+#-----------------------------------------#
+
 function QueryDasOertlicheDe($Rufnummer) {
    $record = false;
    $url = "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$Rufnummer";
@@ -30,6 +46,11 @@ function QueryDasOertlicheDe($Rufnummer) {
 }  
 
 $hm = $_GET["hm"];
+
+# Add area code if phone number does not start with 0
+if ($addAreaCode && strncmp($hm,"0",1) != 0) {
+    $hm = $areaCode.$hm;
+}
 
 $name = QueryDasOertlicheDe($hm);
 
