@@ -16,34 +16,15 @@ $areaCode = "030";
 #-----------------------------------------#
 
 function QueryDasOertlicheDe($Rufnummer) {
-   $record = false;
    $url = "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$Rufnummer";
-   # Create a DOM parser object
-   $dom = new DOMDocument();
-   # Parse the HTML from dasoertliche
-   # The @ before the method call suppresses any warnings that
-   # loadHTMLFile might throw because of invalid HTML or URL.
-   @$dom->loadHTMLFile($url);
-   if ($dom->documentURI == null)
-   {
-      die ('Timeout bei Abruf der Webseite '.$url);
-      return false;
-   }
-   $finder = new DomXPath($dom);
-   $classname="hit clearfix ";
-   $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), '$classname')]");
-   if ($nodes->length == 0) return false;
-   $cNode = $nodes->item(0); //div left
-   if ($cNode->nodeName != 'div') return false;
-   if (!$cNode->hasChildNodes()) return false;
-   $ahref = $cNode->childNodes->item(1);
-   if (!$ahref->hasChildNodes()) return false;
-   foreach ($ahref->childNodes as $div)
-   {
-      if ($div->nodeName == "a" ) break;
-   }
-    return utf8_encode(trim(utf8_decode($div->nodeValue), " \t\n\r\0\xa0"));
-}  
+    $data = file_get_contents($url);
+    preg_match('/var handlerData = \[\[\'.*\',\'.*\',\'.*\',\'.*\',\'.*\',\'(.*)\',\'.*\', \'.*\', \'.*\', \'(.*)\', \'(.*)\', \'(.*)\', \'.*\', \'.*\', \'(\S*) (.*)\', \'.*\'\]\];/m', $data, $entry);
+    return $entry;
+}
+
+function addTagIfNotZero($tag,$str) {
+    return $str != '0' ? '<'.$tag.'>'.$str.'</'.$tag.'>' : '';
+}
 
 $hm = $_GET["hm"];
 
@@ -55,16 +36,18 @@ if ($addAreaCode && strncmp($hm,"0",1) != 0) {
 $name = QueryDasOertlicheDe($hm);
 
 $xml = '';
-if ($name == "") {
+if (count($name) == 0) {
     $xml = '<?xml version="1.0" encoding="UTF-8"?>
 <list response="get_list" type="pb" notfound="hm" total="0"/>';
 } else {
-    $name = explode(' ',$name,2);
     $xml = '<?xml version="1.0" encoding="UTF-8"?>
 <list response="get_list" type="pb" total="1" first="1" last="1">
     <entry>
-        <ln>'.$name[0].'</ln>
-        <fn>'.$name[1].'</fn>
+        '.addTagIfNotZero('ln',$name[5]).'
+        '.addTagIfNotZero('fn',$name[6]).'
+        '.addTagIfNotZero('ct',$name[1]).'
+        '.addTagIfNotZero('st',$name[3]).'
+        '.addTagIfNotZero('nr',$name[4]).'
         <hm>'.$hm.'</hm>
     </entry>
 </list>';
