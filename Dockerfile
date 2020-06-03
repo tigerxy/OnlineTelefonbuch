@@ -1,4 +1,13 @@
 FROM php:apache
 
-COPY oertliche.php /var/www/html/index.php
+COPY api.php /var/www/html/api.php
+COPY classes /var/www/html/classes/
 
+# Signalize PHP that it's running with Docker
+ENV DOCKER 1
+# 0 or 1 for adding a area code
+ENV ADD_AREA_CODE 1
+# your area code
+ENV AREA_CODE 09191
+
+EXPOSE 80

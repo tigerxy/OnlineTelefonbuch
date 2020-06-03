@@ -6,10 +6,16 @@ Seit Klicktel im März 2018 ihre OpenAPI abgeschaltet hat, werden bei einem Giga
 Bei Fragen darf gerne ein Issue geschrieben werden.
 
 # Installation
-Sie benötigen einen PHP Server. Auf diesem laden Sie das Skript `oertliche.php` hoch. Die URL zu diesem Skript werden sie später als `Serveradresse` benötigen.
+## Klassisch
+Sie benötigen einen PHP Server. Auf diesem laden Sie das Skript `api.php` hoch. Die URL zu diesem Skript werden sie später als `Serveradresse` benötigen.
 
-## Installation mit Docker
-Das Installieren dieses Scriptes mittels Docker ist ebenfalls möglich. Hierfür rufen Sie bitte `docker container run --publish 80:80 <Image-ID auf dem Docker-Hub>` auf. Bitte beachten Sie: Aufgrund der Natur des Docker-Images rufen Sie am Ende einfach nur die Server-URL auf und lassen das `oertliche.php`weg. 
+In der Datei `config.php` können Sie die Vorwahl konfigurieren.
+
+## Mit Docker
+Das Installieren dieses Scriptes mittels Docker ist ebenfalls möglich. Hierfür rufen Sie bitte `docker container run tigerxy/gigaset-telefonbuch` auf.
+
+Im `Dockerfile` können Sie die Vorwahl konfigurieren. Alternativ können die Environment Variablen beim Start überschieben werden.
+`docker container run -e ADD_AREA_CODE=1 tigerxy/gigaset-telefonbuch`
 
 # Einrichtung
 Ich habe diese Anleitung für die Firmware-Version 42.247 geschrieben.
