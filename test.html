@@ -32,9 +32,6 @@
             <code id="response" class="language-xml"></code>
           </pre>
         </div>
-        <div class="panel-footer">
-          <button class="button-primary" onclick="sendReq()">Send</button>
-        </div>
       </div>
       <div class="col col-sm-6 panel">
         <div class="panel-head">
@@ -410,7 +407,7 @@
       return formatted.substring(1, formatted.length - 3);
     }
 
-    function sendReq() {
+    function sendReq(url) {
       fetch(url, {
         method: 'GET',
         headers: {
@@ -436,15 +433,13 @@
         schema: schema,
         formData: formData,
         onChange: e => {
-          console.log(e.formData);
-          console.log(convertDataToURL(e.formData));
           document.getElementById("request").innerText = convertURLToGetReq(convertDataToURL(e.formData));
-          url = convertDataToURL(e.formData);
+        },
+        onSubmit: e => {
+          sendReq(convertDataToURL(e.formData));
         }
       }
     );
-
-    var url = "";
 
     ReactDOM.render(e, document.getElementById("app"));
   </script>
