@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Gigaset-Telefonbuch API-Test</title>
+
+  <!-- Include Mustard-UI https://github.com/kylelogue/mustard-ui -->
+  <link rel="stylesheet" href="https://unpkg.com/mustard-ui@latest/dist/css/mustard-ui.min.css">
+</head>
+
+<body>
+  <section>
+    <h2>Gigaset-Telefonbuch API-Test</h2>
+    <p>Teste die API von deiner Installation.</p>
+  </section>
+
+  <!-- We will put our React component inside this div. -->
+  <section>
+    <div class="row">
+      <div class="col col-sm-6 panel">
+        <div class="panel-head">
+          <p class="panel-title">Simulation</p>
+        </div>
+        <div class="panel-body">
+          <p>Request</p>
+          <pre class="language-http">
+            <code id="request" class="language-http" style="white-space: pre-wrap;"></code>
+          </pre>
+          <p>Response</p>
+          <pre class="language-xml">
+            <code id="response" class="language-xml"></code>
+          </pre>
+        </div>
+        <div class="panel-footer">
+          <button class="button-primary" onclick="sendReq()">Send</button>
+        </div>
+      </div>
+      <div class="col col-sm-6 panel">
+        <div class="panel-head">
+          <p class="panel-title">Konfiguration</p>
+        </div>
+        <div id="app" class="panel-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Load React. -->
+  <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <!-- Load React-Addons-->
+  <script crossorigin src="https://unpkg.com/@rjsf/core/dist/react-jsonschema-form.js"></script>
+  <!-- Load our React component. -->
+  <script type="text/javascript">
+    const Form = JSONSchemaForm.default;
+    const schema = {
+      title: "Test form",
+      type: "object",
+      properties: {
+        command: {
+          type: "string",
+          enum: [
+            "get_list",
+            "chg_data",
+            "copy_data",
+            "add_data",
+            "del_data"
+          ],
+          default: "get_list"
+        }
+      },
+      required: [
+        "command"
+      ],
+      dependencies: {
+        command: {
+          oneOf: [
+            {
+              "$ref": "#/definitions/get_list"
+            },
+            {
+              "$ref": "#/definitions/notImplemented"
+            }
+          ]
+        }
+      },
+      definitions: {
+        get_list: {
+          type: "object",
+          title: "Get List of Phonebook Entries",
+          properties: {
+            command: {
+              enum: [
+                "get_list"
+              ]
+            },
+            type: {
+              type: "string",
+              enum: [
+                "pb",
+                "yp",
+                "pr"
+              ],
+              enumNames: [
+                "list of public phonebook entries",
+                "list of yellow pages entries",
+                "list of private phonebook entries"
+              ],
+              default: "pb"
+            },
+            reqid: {
+              type: "string",
+              description: "hexadecimal",
+              maxLength: 32
+            },
+            first: {
+              type: "integer",
+              minimum: 0,
+              default: 1
+            },
+            last: {
+              type: "integer",
+              minimum: -1
+            },
+            count: {
+              type: "integer",
+              minimum: 1,
+              default: 1
+            },
+            limit: {
+              type: "integer",
+              description: "amount of data in bytes",
+              minimum: 1024,
+              default: 1024
+            },
+            reqsrc: {
+              type: "string",
+              enum: [
+                "auto",
+                "user"
+              ],
+              enumNames: [
+                "auto lookup (search is started for number lookup service)",
+                "manual searchperformed by user hands"
+              ]
+            },
+            lang: {
+              type: "integer",
+              enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38],
+              enumNames: [
+                "undefined",
+                "US",
+                "German",
+                "English International (standard)",
+                "Spanish",
+                "Portuguese",
+                "Scandinavia",
+                "Italian",
+                "Greek",
+                "French",
+                "Dutch",
+                "Norwegian",
+                "Danish",
+                "Swedish",
+                "Finnish",
+                "Czech",
+                "Turkish",
+                "Polish",
+                "Canadian French",
+                "Mexican Spanish",
+                "Brasilien Portuguese",
+                "Numeric",
+                "Slovakian",
+                "Russian",
+                "Greek (with Greek charset)",
+                "Hungarian",
+                "Croatian",
+                "Slovenian",
+                "Romanian",
+                "Serbian",
+                "Bulgarian",
+                "Hebrew",
+                "Chinese",
+                "Arabic",
+                "Persian",
+                "Turkish (with Turkish charset)",
+                "Catalan",
+                "Bosnian",
+                "Ukrainian"
+              ]
+            },
+            mac: {
+              type: "string",
+              minimumLength: 12,
+              maximumLength: 12
+            },
+            id: {
+              type: "string",
+              minimumLength: 2,
+              maximumLength: 32
+            },
+            prid: {
+              type: "integer"
+            },
+            search:
+            {
+              "$ref": "#/definitions/search"
+            }
+          },
+          required: [
+            "type",
+            "first",
+            "last",
+            "count",
+            "limit"
+          ]
+        },
+        search: {
+          type: "object",
+          title: "Search Criteria",
+          properties: {
+            ln: {
+              type: "string",
+              title: "Last Name"
+            },
+            fn: {
+              type: "string",
+              title: "First Name"
+            },
+            nn: {
+              type: "string",
+              title: "Nickname"
+            },
+            ct: {
+              type: "string",
+              title: "City"
+            },
+            zc: {
+              type: "integer",
+              title: "Zipcode"
+            },
+            st: {
+              type: "string",
+              title: "Street"
+            },
+            nr: {
+              type: "integer",
+              title: "House Number"
+            },
+            co: {
+              type: "string",
+              title: "Country",
+              readOnly: true
+            },
+            hm: {
+              type: "string",
+              title: "Home Number (phone number)"
+            },
+            fx: {
+              type: "string",
+              title: "Fax Number",
+              readOnly: true
+            },
+            mb: {
+              type: "string",
+              title: "Mobile Number"
+            },
+            sip: {
+              type: "string",
+              title: "Sip Number (VoIP Number)"
+            },
+            pf: {
+              type: "string",
+              title: "Prefix",
+              readOnly: true
+            },
+            ipf: {
+              type: "string",
+              title: "Intprefix",
+              readOnly: true
+            },
+            rn: {
+              type: "string",
+              title: "Residence Name",
+              readOnly: true
+            },
+            cd: {
+              type: "string",
+              title: "Coordinates (geograph.)",
+              readOnly: true
+            },
+            em: {
+              type: "string",
+              title: "Email"
+            },
+            url: {
+              type: "string",
+              title: "URL",
+              readOnly: true
+            },
+            ai: {
+              type: "string",
+              title: "Additional_info",
+              readOnly: true
+            },
+            pn: {
+              type: "string",
+              title: "Province_name",
+              readOnly: true
+            },
+            sc: {
+              type: "string",
+              title: "Subscriber",
+              readOnly: true
+            },
+            cat: {
+              type: "string",
+              title: "Category"
+            },
+            wh: {
+              type: "string",
+              title: "What"
+            },
+            bi: {
+              type: "string",
+              title: "Birthday",
+              format: "date"
+            },
+            jid: {
+              type: "string",
+              title: "Jabber/Messenger ID"
+            },
+            cpn: {
+              type: "string",
+              title: "Company Name"
+            },
+            prs: {
+              type: "string",
+              title: "Presence state"
+            },
+            apc: {
+              type: "string",
+              title: "Availability Picture Clip",
+              enum: [
+                "yes",
+                "no"
+              ]
+            },
+            pcf: {
+              type: "integer",
+              title: "Picture Clip Format"
+            },
+            in: {
+              type: "string",
+              title: "Internal Number"
+            },
+            bp: {
+              type: "string",
+              title: "Business number"
+            }
+          }
+        },
+        notImplemented: {
+          type: "object",
+          title: "Not implemented",
+          properties: {
+            command: {
+              "enum": [
+                "chg_data",
+                "copy_data",
+                "add_data",
+                "del_data"
+              ]
+            }
+          }
+        }
+      }
+    };
+    function convertObjectToParameter(obj) {
+      return Object.entries(obj).map((e) => {
+        if (typeof (e[1]) == 'object') {
+          return convertObjectToParameter(e[1])
+        } else {
+          if (typeof e[1] === 'undefined') {
+            return '';
+          } else {
+            return e[0] + '=' + e[1].toString();
+          }
+        }
+      }).join('&');
+    }
+    function convertDataToURL(data) {
+      var baseURL = window.location.origin + "/api.php?";
+      return baseURL + convertObjectToParameter(data);
+    }
+
+    function convertURLToGetReq(url) {
+      return "GET " + url + " HTTP/1.1";
+    }
+
+    function formatXml(xml, tab) { // tab = optional indent value, default is tab (\t)
+      var formatted = '', indent = '';
+      tab = tab || '\t';
+      xml.split(/>\s*</).forEach(function (node) {
+        if (node.match(/^\/\w/)) indent = indent.substring(tab.length); // decrease indent by one 'tab'
+        formatted += indent + '<' + node + '>\r\n';
+        if (node.match(/^<?\w[^>]*[^\/]$/)) indent += tab;              // increase indent
+      });
+      return formatted.substring(1, formatted.length - 3);
+    }
+
+    function sendReq() {
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'text/xml; charset=utf-8'
+        }
+      })
+        .then(response => {
+          var ret = "";
+          response.headers.forEach((val, key) => {
+            ret += key + ": " + val + '\n';
+          });
+          response.text().then(data => {
+            document.getElementById("response").innerText = ret + '\n' + formatXml(data);
+          })
+        });
+    }
+
+    const formData = {};
+
+    const e = React.createElement(
+      Form,
+      {
+        schema: schema,
+        formData: formData,
+        onChange: e => {
+          console.log(e.formData);
+          console.log(convertDataToURL(e.formData));
+          document.getElementById("request").innerText = convertURLToGetReq(convertDataToURL(e.formData));
+          url = convertDataToURL(e.formData);
+        }
+      }
+    );
+
+    var url = "";
+
+    ReactDOM.render(e, document.getElementById("app"));
+  </script>
+
+</body>
+
+</html>

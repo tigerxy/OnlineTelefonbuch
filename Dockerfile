@@ -1,6 +1,7 @@
 FROM php:apache
 
 COPY api.php /var/www/html/api.php
+COPY test.html /var/www/html/test.html
 COPY classes /var/www/html/classes/
 
 # Signalize PHP that it's running with Docker

@@ -1,5 +1,5 @@
 # OnlineTelefonbuch
-Online-Telefonbuch für Gigaset C610 IP und C610A IP.
+Gigaset-Telefonbuch für Gigaset C610 IP und C610A IP.
 
 Seit Klicktel im März 2018 ihre OpenAPI abgeschaltet hat, werden bei einem Gigaset die Anrufernamen nicht mehr angezeigt. Ich fand diese Funktion sehr hilfreich und hat für mich einen echten Mehrwert eines IP Telefons geliefert. Leider gibt es von Gigaset offiziell für Deutschland keinen mitgelieferten Provider, also habe ich mir ein kleines PHP Skript zum Behelf gestrickt.
 
@@ -11,9 +11,15 @@ Sie benötigen einen PHP Server. Auf diesem laden Sie das Skript `api.php` hoch.
 
 In der Datei `config.php` können Sie die Vorwahl konfigurieren.
 
-## Mit Docker
+## Docker
+### Sourcecode Build & Run (optional)
+Sie können das Docker Image aus dem Sourcecode selbst bauen und starten mit diesem Befehl: `docker build --tag=gigaset-telefonbuch . && docker run gigaset-telefonbuch`
+
+### Von Dockerhub (empfolen)
+#### Download
 Das Installieren dieses Scriptes mittels Docker ist ebenfalls möglich. Hierfür rufen Sie bitte `docker container run tigerxy/gigaset-telefonbuch` auf.
 
+#### Starten
 Im `Dockerfile` können Sie die Vorwahl konfigurieren. Alternativ können die Environment Variablen beim Start überschieben werden.
 `docker container run -e ADD_AREA_CODE=1 tigerxy/gigaset-telefonbuch`
 
@@ -35,6 +41,9 @@ Nun `Häkchen` neben dem zuvor festgelegten Anbieternamen setzen und diesen bei 
 ![Schritt 3](Schritt3.jpg)
 
 Fertig. Wenn alles geklappt hat, erscheint beim nächsten bekannten Anrufer, der Name, wie von früher gewohnt, im Display.
+
+# Installation testen
+Wenn man die die Seite `test.html` aufruft, kann dort die API getestet werden.
 
 # Weitere Informationen
 Ich habe diese [Dokumentation](https://teamwork.gigaset.com/gigawiki/display/GPPPO/Online+directory) von Gigaset gefunden, die mir bei der Implementierung geholfen hat.
