@@ -5,17 +5,18 @@ require_once( 'provider.php' );
 class oertliche extends provider {
     public function query( $params ) {
         $phone_number = 0;
-        if ( isset( $params['hm'] ) ) {
+        if ( isset( $params['hm'] ) & $params['hm'] != '*' ) {
             $phone_number = $params['hm'];
             $this->normalizePhoneNumber( $phone_number );
 
             $url = "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$phone_number";
         } else {
-            $fn = isset( $params['fn'] ) ? $params['fn'] : '';
-            $ln = isset( $params['ln'] ) ? $params['ln'] : '';
-            $st = isset( $params['st'] ) ? $params['st'] : '';
-            $ct = isset( $params['ct'] ) ? $params['ct'] : '';
-            $url = "https://www.dasoertliche.de/?form_name=search_nat_ext&fn=$fn&kw=$ln&ci=$ct&st=$st";
+            $urlParams = "";
+            foreach (array('fn' => 'fn','ln' => 'kw','ct' => 'ci','st' => 'st') as $key => $val) {
+                if (isset( $params[$key] ) & strlen($params[$key]) > 2) 
+                    $urlParams .= '&'.$val.'='.$params[$key];
+            }
+            $url = "https://www.dasoertliche.de/?form_name=search_nat_ext$urlParams";
         }
         $matches = $this->QueryDasOertlicheDe( $url );
         if ( $matches != NULL ) {
