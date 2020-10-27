@@ -14,7 +14,7 @@ In der Datei `config.php` können Sie die Vorwahl konfigurieren.
 ## Heroku
 Dieser Cloud-Dienst kann mit einem Free Dyno kostenlos genutzt werden. Die Software sollte sich hier auch automatisch updaten.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/tigerxy/OnlineTelefonbuch)
 
 ## Docker
 ### Sourcecode Build & Run (optional)
