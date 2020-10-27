@@ -37,7 +37,7 @@ class oertliche extends provider {
 
     private function QueryDasOertlicheDe( $url ) {
         $data = file_get_contents( $url );
-        preg_match( '/var\shandlerData\s=\s(?P<v>(?>\[(?&v)?(?>\,\s*(?&v))*\])|(?>\'[^\']*\' ) );
+        preg_match( '/var\shandlerData\s=\s*(?P<v>(?>\[(?&v)?(?>\,\s*(?&v))*\])|(?>\'[^\']*\' ) );
         /mx', $data, $entry );
         return json_decode(str_replace('\'', '"', $entry[1] ) );
     }
