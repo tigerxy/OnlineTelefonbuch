@@ -11,6 +11,11 @@ Sie benötigen einen PHP Server. Auf diesem laden Sie das Skript `api.php` hoch.
 
 In der Datei `config.php` können Sie die Vorwahl konfigurieren.
 
+## Heroku
+Dieser Cloud-Dienst kann mit einem Free Dyno kostenlos genutzt werden. Die Software sollte sich hier auch automatisch updaten.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 ## Docker
 ### Sourcecode Build & Run (optional)
 Sie können das Docker Image aus dem Sourcecode selbst bauen und starten mit diesem Befehl: `docker build --tag=gigaset-telefonbuch . && docker run gigaset-telefonbuch`
