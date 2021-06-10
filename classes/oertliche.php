@@ -14,7 +14,7 @@ class oertliche extends provider
             $url = "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$phone_number";
         } else {
             $urlParams = "";
-            foreach (array('fn' => 'fn', 'ln' => 'kw', 'ct' => 'ci', 'st' => 'st') as $key => $val) {
+            foreach (array('fn' => 'fn', 'ln' => 'kw', 'cpn' => 'kw', 'ct' => 'ci', 'st' => 'st') as $key => $val) {
                 if (isset($params[$key]) & strlen($params[$key]) > 2)
                     $urlParams .= '&' . $val . '=' . $params[$key];
             }
