@@ -41,7 +41,7 @@ class oertliche extends provider
     {
         $data = file_get_contents($url);
         preg_match(
-            '/var\shandlerData\s=\s*(?P<v>(?>\[(?&v)?(?>\,\s*(?&v))*\])|(?>\"[^\"]*\")|(?>null));/mx',
+            '/var\shandlerData\s=\s*(?P<v>(?>\[(?&v)?(?>\,\s*(?&v))*\])|(?>\"(\\\"|[^\"])*\")|(?>null));/mx',
             $data,
             $entry
         );
