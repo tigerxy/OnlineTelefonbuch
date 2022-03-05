@@ -7,7 +7,7 @@ class oertliche extends provider
     public function query($params)
     {
         $phone_number = 0;
-        if (isset($params['hm']) & $params['hm'] != '*') {
+        if (array_key_exists('hm', $params) && $params['hm'] != '*') {
             $phone_number = $params['hm'];
             $this->normalizePhoneNumber($phone_number);
 
@@ -15,7 +15,7 @@ class oertliche extends provider
         } else {
             $urlParams = "";
             foreach (array('fn' => 'fn', 'ln' => 'kw', 'cpn' => 'kw', 'ct' => 'ci', 'st' => 'st') as $key => $val) {
-                if (isset($params[$key]) & strlen($params[$key]) > 2)
+                if (array_key_exists($key, $params) && strlen($params[$key]) > 2)
                     $urlParams .= '&' . $val . '=' . $params[$key];
             }
             $url = "https://www.dasoertliche.de/?form_name=search_nat_ext$urlParams";
