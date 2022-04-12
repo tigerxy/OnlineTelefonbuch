@@ -1,13 +1,21 @@
-<?php
-defined( 'INC' ) or die( header( 'HTTP/1.0 403 Forbidden' ) );
+<?php declare(strict_types=1);
+//defined( 'INC' ) or die( header( 'HTTP/1.0 403 Forbidden' ) );
 
-class contact {
+class Contact {
     private $attributes;
+
+    private function getattr( $key ) {
+            return $this->attributes[$key];
+    }
 
     private function setattr( $key, $val ) {
         if ( $val != null ) {
             $this->attributes[$key] = $val;
         }
+    }
+
+    public function getLastName() {
+        return $this->getattr( 'ln' );
     }
 
     public function setLastName( $s ) {

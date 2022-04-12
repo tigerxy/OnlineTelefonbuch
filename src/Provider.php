@@ -1,8 +1,8 @@
-<?php
-defined( 'INC' ) or die( header( 'HTTP/1.0 403 Forbidden' ) );
-require_once( 'contact.php' );
+<?php declare(strict_types=1);
+//defined( 'INC' ) or die( header( 'HTTP/1.0 403 Forbidden' ) );
+//require_once( 'Contact.php' );
 
-abstract class provider {
+abstract class Provider {
     /** @var \contact[] */
     private $results = [];
 

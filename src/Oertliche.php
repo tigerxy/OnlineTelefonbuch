@@ -1,9 +1,30 @@
-<?php
-defined('INC') or die(header('HTTP/1.0 403 Forbidden'));
-require_once('provider.php');
+<?php declare(strict_types=1);
+//defined('INC') or die(header('HTTP/1.0 403 Forbidden'));
 
-class oertliche extends provider
+final class Oertliche extends Provider
 {
+    public function queryByPhoneNumber($phone_number): array
+    {
+        $this->normalizePhoneNumber($phone_number);
+
+        $url = "http://www.dasoertliche.de/Controller?form_name=search_inv&ph=$phone_number";
+
+        $matches = $this->QueryDasOertlicheDe($url);
+
+        return array_map(function ($match) {
+            $contact = new Contact();
+            $contact->setUrl($match[4]);
+            $contact->setCity($match[5]);
+            $contact->setZipcode($match[9]);
+            $contact->setStreet($match[10]);
+            $contact->setHouseNumber($match[11]);
+            $contact->setLastName(explode(' ', $match[14], 2)[0]);
+            $contact->setFirstName(explode(' ', $match[14], 2)[1]);
+            //$contact->setHomeNumber($phone_number); // TODO: Set phone number
+            return $contact;
+        }, $matches);
+    }
+
     public function query($params)
     {
         $phone_number = 0;

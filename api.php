@@ -3,9 +3,9 @@ define( 'INC', true );
 if ( !getenv( 'DOCKER' ) ) {
     include_once('config.php');
 }
-require( 'classes/oertliche.php' );
+require( 'src/Oertliche.php' );
 
-$o = new oertliche();
+$o = new Oertliche();
 $o->query( $_GET );
 
 header( 'Content-Type: text/xml; charset=utf-8' );
