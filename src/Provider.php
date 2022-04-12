@@ -1,64 +1,61 @@
 <?php declare(strict_types=1);
-//defined( 'INC' ) or die( header( 'HTTP/1.0 403 Forbidden' ) );
-//require_once( 'Contact.php' );
 
-abstract class Provider {
-    /** @var \contact[] */
-    private $results = [];
+abstract class Provider
+{
+    protected string $reqCommand = 'get_list';
+    protected string $reqType = 'pb';
+    protected string $reqReqid = '';
+    protected int $reqFirst = 0;
+    protected int $reqLast = 0;
+    protected int $reqCount = 0;
+    protected int $reqLimit = 0;
+    protected string $reqReqsrc = 'user';
+    protected int $reqLang = 2;
+    protected int $reqMac = 0x0;
+    protected string $reqId = '*';
+    protected int $reqPrid = 1;
 
-    protected $reqCommand = 'get_list';
-    protected $reqType = 'pb';
-    protected $reqReqid = '';
-    protected $reqFirst = 0;
-    protected $reqLast = 0;
-    protected $reqCount = 0;
-    protected $reqLimit = 0;
-    protected $reqReqsrc = 'user';
-    protected $reqLang = 2;
-    protected $reqMac = 0x0;
-    protected $reqId = '*';
-    protected $reqPrid = 1;
+    /** @return Contact[] */
+    abstract protected function queryByHomeNumber(string $phoneNumber): array;
 
-    abstract protected function query( $params );
+    /** @return Contact[] */
+    abstract protected function queryByAttributes(array $params): array;
 
-    public function count() {
-        return count( $this->results );
-    }
-
-    public function getXML() {
-        if ( $this->reqCommand == 'get_list' ) {
-            return $this->getList();
+    /**
+     * @param Contact[] $contacts
+     * @return bool|SimpleXMLElement|string
+     */
+    public function getXML(array $contacts)
+    {
+        if ($this->reqCommand == 'get_list') {
+            return $this->toXML($contacts);
         } else {
-            return $this->errorXML( 2 );
+            return $this->errorXML(2);
         }
     }
 
-    protected function addContact( $contact ) {
-        if ( is_a( $contact, 'contact' ) ) {
-            array_push( $this->results, $contact );
-        }
-    }
-
-    protected function normalizePhoneNumber( &$number ) {
-        $addAreaCode = getenv( 'ADD_AREA_CODE' );
-        $areaCode = getenv( 'AREA_CODE' );
+    public static function normalizePhoneNumber(string $number): string
+    {
+        $addAreaCode = getenv('ADD_AREA_CODE');
+        $areaCode = getenv('AREA_CODE');
         # Add area code if phone number does not start with 0
-        if ( $addAreaCode && strncmp( $number, '0', 1 ) != 0 ) {
-            $number = $areaCode.$number;
+        if ($addAreaCode && strncmp($number, '0', 1) != 0) {
+            $number = $areaCode . $number;
         }
+        return $number;
     }
 
     /**
-    * Generate a error XML
-    *
-    * @param int $errorid 0-7
-    * @param string $msg ( optional error message )
-    * @return \SimpleXMLElement errorxml
-    * @access private
-    **/
-
-    private function errorXML( $errorid, $msg = '' ) {
-        $predeferrormsg = [
+     * Generate a error XML
+     *
+     * @param int $errorId 0-7
+     * @param string $msg ( optional error message )
+     * @return SimpleXMLElement errorxml
+     * @access private
+     **/
+    private function errorXML(int $errorId, string $msg = ''): SimpleXMLElement
+    {
+        $errorMessages = [
             'OK',
             'not allowed',
             'syntax error',
@@ -68,63 +65,67 @@ abstract class Provider {
             'service not available',
             'requested format not available'
         ];
-        $xml = new SimpleXMLElement( '<error/>' );
-        $xml->addAttribute( 'response', $this->reqCommand );
-        $xml->addAttribute( 'type', $this->reqType );
-        $xml->addChild( 'errorid', $errorid );
-        if ( $msg != '' ) {
-            $xml->addChild( 'message', $msg );
-        } elseif ( $errorid >= 0 && $errorid <= 7 ) {
-            $xml->addChild( 'message', $predeferrormsg[$errorid] );
+        $xml = new SimpleXMLElement('<error/>');
+        $xml->addAttribute('response', $this->reqCommand);
+        $xml->addAttribute('type', $this->reqType);
+        $xml->addChild('errorid', $errorId);
+        if ($msg != '') {
+            $xml->addChild('message', $msg);
+        } elseif ($errorId >= 0 && $errorId <= 7) {
+            $xml->addChild('message', $errorMessages[$errorId]);
         }
         return $xml;
     }
 
-    private function getList() {
-        if ( $this->reqId != '*' ) {
-            return $this->errorXML( 2 );
+    /**
+     * @param Contact[] $contacts
+     * @return SimpleXMLElement
+     */
+    private function toXML(array $contacts): SimpleXMLElement
+    {
+        if ($this->reqId != '*') {
+            return $this->errorXML(2);
         }
-        if ( $this->reqFirst != 0 && $this->reqLast != 0 ) {
-            return $this->errorXML( 4, 'first and last parameters not allowed' );
+        if ($this->reqFirst != 0 && $this->reqLast != 0) {
+            return $this->errorXML(4, 'first and last parameters not allowed');
         }
-        $xml = new SimpleXMLElement( '<list response="get_list"/>' );
-        $xml->addAttribute( 'type', $this->reqType );
-        if ( $this->count() == 0 ) {
-            $xml->addAttribute( 'notfound', 'phonenumber' );
-            $xml->addAttribute( 'total', 0 );
+        $xml = new SimpleXMLElement('<list response="get_list"/>');
+        $xml->addAttribute('type', $this->reqType);
+        $count = count($contacts);
+        if ($count == 0) {
+            $xml->addAttribute('notfound', 'phonenumber');
+            $xml->addAttribute('total', strval(0));
         } else {
-            $from = $this->reqFirst-1;
-            $to = $this->count()-1;
-            if ( $this->reqLast > 0 ) {
-                $from = $this->reqLast-1;
+            $from = $this->reqFirst - 1;
+            $to = $count - 1;
+            if ($this->reqLast > 0) {
+                $from = $this->reqLast - 1;
             }
-            if ( $this->reqLast == -1 ) {
+            if ($this->reqLast == -1) {
                 $from = $to - $this->reqCount;
             }
-            if ( $this->reqCount>0 ) {
+            if ($this->reqCount > 0) {
                 $to = $from + $this->reqCount;
             }
-            if ( $from < 0 ) {
+            if ($from < 0) {
                 $from = 0;
             }
-            if ( $to > $this->count()-1 ) {
-                $to = $this->count()-1;
+            if ($to > $count - 1) {
+                $to = $count - 1;
             }
 
-            $xml->addAttribute( 'total', $this->count() );
-            $xml->addAttribute( 'first', $from+1 );
-            $xml->addAttribute( 'last', $to+1 );
+            $xml->addAttribute('total', strval($count));
+            $xml->addAttribute('first', strval($from + 1));
+            $xml->addAttribute('last', strval($to + 1));
 
-            for ( $i = $from; $i <= $to; $i++ ) {
-                $contact = $this->results[$i];
-                $entry = $xml->addChild( 'entry' );
-                foreach ( $contact->getAttributes() AS $attr => $val ) {
-                    $entry->addChild( $attr, $val );
+            for ($i = $from; $i <= $to; $i++) {
+                $contact = $contacts[$i];
+                $entry = $xml->addChild('entry');
+                foreach ($contact->getAttributes() as $attr => $val) {
+                    $entry->addChild($attr, $val);
                 }
             }
         }
-        return $xml->asXML();
+        return $xml;
     }
 }
-
-?>

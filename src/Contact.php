@@ -1,69 +1,109 @@
 <?php declare(strict_types=1);
-//defined( 'INC' ) or die( header( 'HTTP/1.0 403 Forbidden' ) );
 
-class Contact {
-    private $attributes;
+class Contact
+{
+    private array $attributes = array();
 
-    private function getattr( $key ) {
+    private function getAttribute($key)
+    {
+        if (isset($this->attributes[$key])) {
             return $this->attributes[$key];
+        }
+        return null;
     }
 
-    private function setattr( $key, $val ) {
-        if ( $val != null ) {
+    private function setAttribute($key, $val)
+    {
+        if ($val != null) {
             $this->attributes[$key] = $val;
         }
     }
 
-    public function getLastName() {
-        return $this->getattr( 'ln' );
+    public function getLastName()
+    {
+        return $this->getAttribute('ln');
     }
 
-    public function setLastName( $s ) {
-        $this->setattr( 'ln', $s );
+    public function setLastName($s): Contact
+    {
+        $this->setAttribute('ln', $s);
+        return $this;
     }
 
-    public function setFirstName( $s ) {
-        $this->setattr( 'fn', $s );
+    public function getFirstName()
+    {
+        return $this->getAttribute('fn');
     }
 
-    public function setNickname( $s ) {
-        $this->setattr( 'nn', $s );
+    public function setFirstName($s): Contact
+    {
+        $this->setAttribute('fn', $s);
+        return $this;
     }
 
-    public function setCity( $s ) {
-        $this->setattr( 'ct', $s );
+    public function setNickname($s): Contact
+    {
+        $this->setAttribute('nn', $s);
+        return $this;
     }
 
-    public function setZipcode( $s ) {
-        $this->setattr( 'zc', $s );
+    public function setCity($s): Contact
+    {
+        $this->setAttribute('ct', $s);
+        return $this;
     }
 
-    public function setStreet( $s ) {
-        $this->setattr( 'st', $s );
+    public function setZipcode($s): Contact
+    {
+        $this->setAttribute('zc', $s);
+        return $this;
     }
 
-    public function setHouseNumber( $s ) {
-        $this->setattr( 'nr', $s );
+    public function setStreet($s): Contact
+    {
+        $this->setAttribute('st', $s);
+        return $this;
     }
 
-    public function setCountry( $s ) {
-        $this->setattr( 'co', $s );
+    public function setHouseNumber($s): Contact
+    {
+        $this->setAttribute('nr', $s);
+        return $this;
     }
 
-    public function setHomeNumber( $s ) {
-        $this->setattr( 'hm', $s );
+    public function setCountry($s): Contact
+    {
+        $this->setAttribute('co', $s);
+        return $this;
     }
 
-    public function setFaxNumber( $s ) {
-        $this->setattr( 'fx', $s );
+    public function getHomeNumber()
+    {
+        return $this->getAttribute('hm');
     }
 
-    public function setMobileNumber( $s ) {
-        $this->setattr( 'mb', $s );
+    public function setHomeNumber($s): Contact
+    {
+        $this->setAttribute('hm', $s);
+        return $this;
     }
 
-    public function setSipNumber( $s ) {
-        $this->setattr( 'sip', $s );
+    public function setFaxNumber($s): Contact
+    {
+        $this->setAttribute('fx', $s);
+        return $this;
+    }
+
+    public function setMobileNumber($s): Contact
+    {
+        $this->setAttribute('mb', $s);
+        return $this;
+    }
+
+    public function setSipNumber($s): Contact
+    {
+        $this->setAttribute('sip', $s);
+        return $this;
     }
 
     /*
@@ -73,12 +113,16 @@ class Contact {
     Coordinates ( geograph. )   cd
     */
 
-    public function setEmail( $s ) {
-        $this->setattr( 'em', $s );
+    public function setEmail($s): Contact
+    {
+        $this->setAttribute('em', $s);
+        return $this;
     }
 
-    public function setUrl( $s ) {
-        $this->setattr( 'url', $s );
+    public function setUrl($s): Contact
+    {
+        $this->setAttribute('url', $s);
+        return $this;
     }
 
     /*
@@ -87,24 +131,34 @@ class Contact {
     Subscriber                  sc
     */
 
-    public function setCategory( $s ) {
-        $this->setattr( 'cat', $s );
+    public function setCategory($s): Contact
+    {
+        $this->setAttribute('cat', $s);
+        return $this;
     }
 
-    public function setWhat( $s ) {
-        $this->setattr( 'wh', $s );
+    public function setWhat($s): Contact
+    {
+        $this->setAttribute('wh', $s);
+        return $this;
     }
 
-    public function setBirthday( $s ) {
-        $this->setattr( 'bi', $s );
+    public function setBirthday($s): Contact
+    {
+        $this->setAttribute('bi', $s);
+        return $this;
     }
 
-    public function setJabber( $s ) {
-        $this->setattr( 'jid', $s );
+    public function setJabber($s): Contact
+    {
+        $this->setAttribute('jid', $s);
+        return $this;
     }
 
-    public function setCompanyName( $s ) {
-        $this->setattr( 'cpn', $s );
+    public function setCompanyName($s): Contact
+    {
+        $this->setAttribute('cpn', $s);
+        return $this;
     }
 
     /*
@@ -115,9 +169,8 @@ class Contact {
     Business number             bp
     */
 
-    public function getAttributes() {
+    public function getAttributes(): array
+    {
         return $this->attributes;
     }
 }
-
-?>
