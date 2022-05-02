@@ -119,7 +119,7 @@ abstract class provider {
                 $contact = $this->results[$i];
                 $entry = $xml->addChild( 'entry' );
                 foreach ( $contact->getAttributes() AS $attr => $val ) {
-                    $entry->addChild( $attr, $val );
+                    $entry->addChild( $attr, htmlspecialchars($val) );
                 }
             }
         }
